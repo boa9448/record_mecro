@@ -46,19 +46,6 @@ class Ui_MainWindow(object):
         self.tab.setObjectName(u"tab")
         self.gridLayout_3 = QGridLayout(self.tab)
         self.gridLayout_3.setObjectName(u"gridLayout_3")
-        self.groupBox = QGroupBox(self.tab)
-        self.groupBox.setObjectName(u"groupBox")
-        self.gridLayout_2 = QGridLayout(self.groupBox)
-        self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.recorded_item_list = QListWidget(self.groupBox)
-        self.recorded_item_list.setObjectName(u"recorded_item_list")
-        self.recorded_item_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
-
-        self.gridLayout_2.addWidget(self.recorded_item_list, 0, 0, 1, 1)
-
-
-        self.gridLayout_3.addWidget(self.groupBox, 0, 0, 1, 1)
-
         self.groupBox_2 = QGroupBox(self.tab)
         self.groupBox_2.setObjectName(u"groupBox_2")
         self.gridLayout_4 = QGridLayout(self.groupBox_2)
@@ -73,7 +60,20 @@ class Ui_MainWindow(object):
 
         self.gridLayout_4.addWidget(self.record_save_btn, 1, 0, 1, 1)
 
-        self.groupBox_3 = QGroupBox(self.groupBox_2)
+        self.record_start_btn = QPushButton(self.groupBox_2)
+        self.record_start_btn.setObjectName(u"record_start_btn")
+
+        self.gridLayout_4.addWidget(self.record_start_btn, 0, 0, 1, 1)
+
+        self.record_run_btn = QPushButton(self.groupBox_2)
+        self.record_run_btn.setObjectName(u"record_run_btn")
+
+        self.gridLayout_4.addWidget(self.record_run_btn, 3, 0, 1, 1)
+
+
+        self.gridLayout_3.addWidget(self.groupBox_2, 0, 1, 1, 1)
+
+        self.groupBox_3 = QGroupBox(self.tab)
         self.groupBox_3.setObjectName(u"groupBox_3")
         self.gridLayout_5 = QGridLayout(self.groupBox_3)
         self.gridLayout_5.setObjectName(u"gridLayout_5")
@@ -112,20 +112,20 @@ class Ui_MainWindow(object):
         self.gridLayout_5.addItem(self.verticalSpacer, 2, 0, 1, 1)
 
 
-        self.gridLayout_4.addWidget(self.groupBox_3, 4, 0, 1, 1)
+        self.gridLayout_3.addWidget(self.groupBox_3, 1, 1, 1, 1)
 
-        self.record_start_btn = QPushButton(self.groupBox_2)
-        self.record_start_btn.setObjectName(u"record_start_btn")
+        self.groupBox = QGroupBox(self.tab)
+        self.groupBox.setObjectName(u"groupBox")
+        self.gridLayout_2 = QGridLayout(self.groupBox)
+        self.gridLayout_2.setObjectName(u"gridLayout_2")
+        self.recorded_item_list = QListWidget(self.groupBox)
+        self.recorded_item_list.setObjectName(u"recorded_item_list")
+        self.recorded_item_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
 
-        self.gridLayout_4.addWidget(self.record_start_btn, 0, 0, 1, 1)
-
-        self.record_run_btn = QPushButton(self.groupBox_2)
-        self.record_run_btn.setObjectName(u"record_run_btn")
-
-        self.gridLayout_4.addWidget(self.record_run_btn, 3, 0, 1, 1)
+        self.gridLayout_2.addWidget(self.recorded_item_list, 0, 0, 1, 1)
 
 
-        self.gridLayout_3.addWidget(self.groupBox_2, 0, 1, 1, 1)
+        self.gridLayout_3.addWidget(self.groupBox, 0, 0, 2, 1)
 
         self.tabWidget.addTab(self.tab, "")
         self.tab_2 = QWidget()
@@ -169,16 +169,16 @@ class Ui_MainWindow(object):
         self.actionexit.setText(QCoreApplication.translate("MainWindow", u"exit", None))
         self.actionkor.setText(QCoreApplication.translate("MainWindow", u"kor", None))
         self.actioneng.setText(QCoreApplication.translate("MainWindow", u"eng", None))
-        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"recorded item", None))
         self.groupBox_2.setTitle(QCoreApplication.translate("MainWindow", u"record", None))
         self.record_load_btn.setText(QCoreApplication.translate("MainWindow", u"load", None))
         self.record_save_btn.setText(QCoreApplication.translate("MainWindow", u"save", None))
+        self.record_start_btn.setText(QCoreApplication.translate("MainWindow", u"start (=)", None))
+        self.record_run_btn.setText(QCoreApplication.translate("MainWindow", u"run (\\)", None))
         self.groupBox_3.setTitle(QCoreApplication.translate("MainWindow", u"run", None))
         self.use_random_delay_check.setText(QCoreApplication.translate("MainWindow", u"use random delay", None))
         self.label.setText(QCoreApplication.translate("MainWindow", u"random delay min : ", None))
         self.label_2.setText(QCoreApplication.translate("MainWindow", u"random delay max : ", None))
-        self.record_start_btn.setText(QCoreApplication.translate("MainWindow", u"start (=)", None))
-        self.record_run_btn.setText(QCoreApplication.translate("MainWindow", u"run (\\)", None))
+        self.groupBox.setTitle(QCoreApplication.translate("MainWindow", u"recorded item", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), QCoreApplication.translate("MainWindow", u"record", None))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), QCoreApplication.translate("MainWindow", u"recoreded files", None))
         self.menufile.setTitle(QCoreApplication.translate("MainWindow", u"file", None))
