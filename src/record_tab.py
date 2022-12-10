@@ -2,9 +2,9 @@ import os
 from typing import Union
 from ctypes import wintypes
 
-from PySide6.QtCore import Qt, Slot, Signal, QByteArray, QObject, QEvent, QTranslator
-from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QWidget
-from PySide6.QtGui import QCloseEvent, QKeyEvent
+from PySide6.QtCore import Qt, Slot, Signal, QByteArray, QObject, QEvent
+from PySide6.QtWidgets import QFileDialog, QWidget
+from PySide6.QtGui import QCloseEvent, QKeyEvent, QShowEvent, QHideEvent
 
 from form.record_form import Ui_record_form
 from class_dd import ClassDD
@@ -52,19 +52,22 @@ class RecordTab(QWidget, Ui_record_form):
 
         self.record_list = []
 
-        cur_dir = os.path.dirname(os.path.abspath(__file__))
-        dd_path = os.path.join(cur_dir, "3rdparty", "DD64.dll")
-        self.dd_obj = ClassDD(dd_path)
+        self.dd_obj = ClassDD(None)
 
         self.hotkey_list = [hotkey.VK_OEM_PLUS, hotkey.VK_OEM_5]
+
+    def showEvent(self, event: QShowEvent) -> None:
         hotkey.register_hotkey(self.winId(), 0, self.hotkey_list[0])
         hotkey.register_hotkey(self.winId(), 1, self.hotkey_list[1])
+        return super().showEvent(event)
 
-
-    def closeEvent(self, event : QCloseEvent) -> None:
+    def hideEvent(self, event : QHideEvent) -> None:
         hotkey.unregister_hotkey(self.winId(), 0)
         hotkey.unregister_hotkey(self.winId(), 1)
 
+    def closeEvent(self, event: QCloseEvent) -> None:
+        hotkey.unregister_hotkey(self.winId(), 0)
+        hotkey.unregister_hotkey(self.winId(), 1)
 
     def nativeEvent(self, eventType: Union[QByteArray, bytes], message: int) -> object:
         if eventType == b"windows_generic_MSG":
