@@ -36,7 +36,7 @@ class RecordTab(QWidget, Ui_record_form):
     press_release_signal = Signal(tuple)
     click_signal = Signal(tuple)
 
-    def __init__(self):
+    def __init__(self) -> None:
         super(RecordTab, self).__init__()
         self.setupUi(self)
 
@@ -109,7 +109,7 @@ class RecordTab(QWidget, Ui_record_form):
         self.add_items(self.record_list)
 
     @Slot()
-    def record_run_btn_clicked_handler(self):
+    def record_run_btn_clicked_handler(self) -> None:
         is_running = getattr(self, "is_running", False)
         if is_running:
             self.end_runner()
