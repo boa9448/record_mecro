@@ -3,6 +3,7 @@ import sys
 
 from PySide6.QtCore import QTranslator
 from PySide6.QtWidgets import QApplication, QMainWindow
+from PySide6.QtGui import QCloseEvent
 
 from form.main_form import Ui_MainWindow
 from record_tab import RecordTab
@@ -12,7 +13,7 @@ from class_dd import ClassDD
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
-    def __init__(self):
+    def __init__(self) -> None:
         super(MainWindow, self).__init__()
         self.setupUi(self)
 
@@ -27,6 +28,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.tabWidget.addTab(RecordTab(), self.tr("record"))
         self.tabWidget.addTab(RecordFileTab(), self.tr("record_file"))
+
+    def closeEvent(self, event : QCloseEvent) -> None:
+        tab_count = self.tabWidget.count()
+        for i in range(tab_count):
+            self.tabWidget.widget(i).close()
+
+        return super().closeEvent(event)
 
     def change_lang(self, lang : str) -> None:
         app = QApplication.instance()
