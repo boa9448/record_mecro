@@ -87,10 +87,10 @@ class Ui_record_file_form(object):
 
         self.gridLayout_8.addWidget(self.run_type_combo, 3, 0, 1, 1)
 
-        self.record_open_folde_btn = QPushButton(self.groupBox_5)
-        self.record_open_folde_btn.setObjectName(u"record_open_folde_btn")
+        self.record_open_folder_btn = QPushButton(self.groupBox_5)
+        self.record_open_folder_btn.setObjectName(u"record_open_folder_btn")
 
-        self.gridLayout_8.addWidget(self.record_open_folde_btn, 0, 0, 1, 1)
+        self.gridLayout_8.addWidget(self.record_open_folder_btn, 0, 0, 1, 1)
 
 
         self.gridLayout.addWidget(self.groupBox_5, 0, 1, 1, 1)
@@ -109,6 +109,6 @@ class Ui_record_file_form(object):
         self.record_file_run_btn.setText(QCoreApplication.translate("record_file_form", u"run (\\)", None))
         self.label_3.setText(QCoreApplication.translate("record_file_form", u"random delay min : ", None))
         self.label_4.setText(QCoreApplication.translate("record_file_form", u"random delay max : ", None))
-        self.record_open_folde_btn.setText(QCoreApplication.translate("record_file_form", u"open folder", None))
+        self.record_open_folder_btn.setText(QCoreApplication.translate("record_file_form", u"open folder", None))
     # retranslateUi
 

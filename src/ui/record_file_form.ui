@@ -87,7 +87,7 @@
        <widget class="QComboBox" name="run_type_combo"/>
       </item>
       <item row="0" column="0">
-       <widget class="QPushButton" name="record_open_folde_btn">
+       <widget class="QPushButton" name="record_open_folder_btn">
         <property name="text">
          <string>open folder</string>
         </property>
