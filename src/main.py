@@ -3,7 +3,7 @@ import sys
 from typing import Union
 from ctypes import wintypes
 
-from PySide6.QtCore import Qt, Slot, Signal, QByteArray, QObject, QEvent
+from PySide6.QtCore import Qt, Slot, Signal, QByteArray, QObject, QEvent, QTranslator
 from PySide6.QtWidgets import QApplication, QMainWindow, QFileDialog, QWidget
 from PySide6.QtGui import QCloseEvent, QKeyEvent
 from pynput import keyboard
@@ -43,12 +43,17 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__()
         self.setupUi(self)
 
+        self.change_lang("kor")
+
         self.record_start_btn.clicked.connect(self.record_start_btn_clicked_handler)
         self.record_save_btn.clicked.connect(self.record_save_btn_clicked_handler)
         self.record_load_btn.clicked.connect(self.record_load_btn_clicked_handler)
         self.record_run_btn.clicked.connect(self.record_run_btn_clicked_handler)
 
         key_press(self.recorded_item_list).connect(self.recorded_item_list_key_press_handler)
+
+        self.action_lang_eng.triggered.connect(lambda : self.change_lang("eng"))
+        self.action_lang_kor.triggered.connect(lambda : self.change_lang("kor"))
 
         self.press_release_signal.connect(self.press_release_signal_handler)
         self.click_signal.connect(self.click_signal_handler)
@@ -82,13 +87,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def record_start_btn_clicked_handler(self) -> None:
         is_recording = getattr(self, "is_recording", False)
         if is_recording:
-            self.record_start_btn.setText("start (=)")
+            self.record_start_btn.setText(self.tr("start (=)"))
             self.is_recording = False
 
             self.recorder.stop()
 
         else:
-            self.record_start_btn.setText("stop (=)")
+            self.record_start_btn.setText(self.tr("stop (=)"))
             self.is_recording = True
 
             self.recorder = Recorder(lambda data : self.press_release_signal.emit(data)
@@ -98,12 +103,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     @Slot()
     def record_save_btn_clicked_handler(self) -> None:
-        file_path = QFileDialog.getSaveFileName(self, "Save Record", os.getcwd(), "Json Files (*.json)")[0]
+        file_path = QFileDialog.getSaveFileName(self, self.tr("Save Record"), os.getcwd(), self.tr("Json Files (*.json)"))[0]
         Recorder.save_record(self.record_list, file_path)
 
     @Slot()
     def record_load_btn_clicked_handler(self) -> None:
-        file_path = QFileDialog.getOpenFileName(self, "Load Record", os.getcwd(), "Json Files (*.json)")[0]
+        file_path = QFileDialog.getOpenFileName(self, self.tr("Load Record"), os.getcwd(), self.tr("Json Files (*.json)"))[0]
         self.record_list = Recorder.load_record(file_path)
         self.add_items(self.record_list)
 
@@ -121,6 +126,19 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         if event.key() == Qt.Key.Key_Delete:
             self.delete_selected_item()
 
+    def change_lang(self, lang : str) -> None:
+        app = QApplication.instance()
+
+        if hasattr(self, "trasnlator"):
+            app.removeTranslator(self.trasnlator)
+
+        trasnlator = QTranslator()
+        trasnlator.load(f"lang_{lang}.qm")
+        app.installTranslator(trasnlator)
+        self.trasnlator = trasnlator
+
+        self.retranslateUi(self)
+
     def delete_selected_item(self):
         while True:
             selected_items = self.recorded_item_list.selectedItems()
@@ -133,7 +151,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             del self.record_list[row]
 
     def start_runner(self) -> None:
-        self.record_run_btn.setText("stop (\\)")
+        self.record_run_btn.setText(self.tr("stop (\\)"))
         self.is_running = True
 
         random_delay_min_max = None
@@ -144,14 +162,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.runner = Runner(self.dd_obj, self.record_list, random_delay_min_max)
         def end_callback():
-            self.record_run_btn.setText("run (\\)")
+            self.record_run_btn.setText(self.tr("run (\\)"))
             self.is_running = False
 
         self.runner.end_callback = end_callback
         self.runner.start()
 
     def end_runner(self) -> None:
-        self.record_run_btn.setText("run (\\)")
+        self.record_run_btn.setText(self.tr("run (\\)"))
         self.is_running = False
 
         self.runner.stop()
