@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>record_file_form</class>
+ <widget class="QWidget" name="record_file_form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>record_file</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0">
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="title">
+      <string>recorded files</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_7">
+      <item row="0" column="0">
+       <widget class="QListWidget" name="record_file_list"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QGroupBox" name="groupBox_5">
+     <property name="title">
+      <string>run</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_8">
+      <item row="5" column="0">
+       <spacer name="verticalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>20</width>
+          <height>40</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item row="1" column="0">
+       <widget class="QCheckBox" name="use_random_delay_check">
+        <property name="text">
+         <string>use random delay</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QPushButton" name="record_file_run_btn">
+        <property name="text">
+         <string>start</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0">
+       <layout class="QFormLayout" name="formLayout_2">
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>random delay min : </string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QDoubleSpinBox" name="ramdom_delay_min_spin"/>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_4">
+          <property name="text">
+           <string>random delay max : </string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="1">
+         <widget class="QDoubleSpinBox" name="ramdom_delay_max_spin"/>
+        </item>
+       </layout>
+      </item>
+      <item row="3" column="0">
+       <widget class="QComboBox" name="run_type_combo"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
