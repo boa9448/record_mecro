@@ -38,16 +38,6 @@
         <source>eng</source>
         <translation></translation>
     </message>
-    <message>
-        <location filename="src/main.py" line="21"/>
-        <source>record</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="src/main.py" line="22"/>
-        <source>record_file</source>
-        <translation></translation>
-    </message>
 </context>
 <context>
     <name>record_file_form</name>
@@ -73,7 +63,7 @@
     </message>
     <message>
         <location filename="src/ui/record_file_form.ui" line="58"/>
-        <source>start</source>
+        <source>run (\)</source>
         <translation></translation>
     </message>
     <message>

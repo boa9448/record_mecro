@@ -55,7 +55,7 @@
       <item row="4" column="0">
        <widget class="QPushButton" name="record_file_run_btn">
         <property name="text">
-         <string>start</string>
+         <string>run (\)</string>
         </property>
        </widget>
       </item>

@@ -9,14 +9,12 @@
         <translation>메인 윈도우임</translation>
     </message>
     <message>
-        <location filename="src/main.py" line="21"/>
         <source>record</source>
-        <translation>녹화</translation>
+        <translation type="vanished">녹화</translation>
     </message>
     <message>
-        <location filename="src/main.py" line="22"/>
         <source>record_file</source>
-        <translation>녹화된 파일</translation>
+        <translation type="vanished">녹화된 파일</translation>
     </message>
     <message>
         <source>load</source>
@@ -125,8 +123,12 @@
     </message>
     <message>
         <location filename="src/ui/record_file_form.ui" line="58"/>
+        <source>run (\)</source>
+        <translation>실행 (\)</translation>
+    </message>
+    <message>
         <source>start</source>
-        <translation>실행 ( ] )</translation>
+        <translation type="vanished">실행 ( ] )</translation>
     </message>
     <message>
         <location filename="src/ui/record_file_form.ui" line="67"/>
