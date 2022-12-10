@@ -8,6 +8,8 @@ from form.main_form import Ui_MainWindow
 from record_tab import RecordTab
 from record_file_tab import RecordFileTab
 
+from class_dd import ClassDD
+
 
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
@@ -18,6 +20,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.action_lang_eng.triggered.connect(lambda : self.change_lang("eng"))
         self.action_lang_kor.triggered.connect(lambda : self.change_lang("kor"))
+
+        cur_dir = os.path.dirname(os.path.abspath(__file__))
+        dd_path = os.path.join(cur_dir, "3rdparty", "DD64.dll")
+        dd_obj = ClassDD(dd_path)
 
         self.tabWidget.addTab(RecordTab(), self.tr("record"))
         self.tabWidget.addTab(RecordFileTab(), self.tr("record_file"))

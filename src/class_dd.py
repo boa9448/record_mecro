@@ -4,8 +4,18 @@ from input_base import KeyState, MouseButton, MouseState
 
 
 class ClassDD:
+    def __del__(self) -> None:
+        """FreeLibrary = windll.kernel32["FreeLibrary"]
+        FreeLibrary.argtypes = (wintypes.HMODULE,)
+        FreeLibrary(self._hModule._handle)"""
 
-    def __init__(self, dll_path : str):
+    def __new__(cls, *args, **kwargs):
+        if not hasattr(cls, '_instance'):
+            cls._instance = super(ClassDD, cls).__new__(cls)
+            cls._instance.init(*args, **kwargs)
+        return cls._instance
+
+    def init(self, dll_path : str) -> None:
         #dd 라이브러리를 불러옴
         self._hModule = windll.LoadLibrary(dll_path)
         self._DD_key = self._hModule["DD_key"] #DD_key(DD키코드, 키상태)
@@ -36,11 +46,6 @@ class ClassDD:
         self._DD_str.argtypes = (c_char_p,)
         self._DD_str.restype = c_int32
 
-    def __del__(self):
-        """FreeLibrary = windll.kernel32["FreeLibrary"]
-        FreeLibrary.argtypes = (wintypes.HMODULE,)
-        FreeLibrary(self._hModule._handle)"""
-
     def key(self, vk : int, status : KeyState) -> None:
         self._DD_key(self._DD_todc(vk), status)
 
@@ -50,16 +55,16 @@ class ClassDD:
     def key_release(self, vk : int) -> None:
         self.key(vk, KeyState.RELEASE)
 
-    def btn(self, code : MouseButton, status : MouseState):
+    def btn(self, code : MouseButton, status : MouseState) -> None:
         self._DD_btn(code << status)
 
-    def btn_press(self, button_code : MouseButton) -> bool:
-        return self.btn(button_code, MouseState.PRESS)
+    def btn_press(self, button_code : MouseButton) -> None:
+        self.btn(button_code, MouseState.PRESS)
 
-    def btn_release(self, button_code : MouseButton) -> bool:
-        return self.btn(button_code, MouseState.RELEASE)
+    def btn_release(self, button_code : MouseButton) -> None:
+        self.btn(button_code, MouseState.RELEASE)
 
-    def move(self, x: int, y: int, relative: bool):
+    def move(self, x: int, y: int, relative: bool) -> None:
         if not relative:
             self._DD_mov(x, y)
         else:
