@@ -55,6 +55,7 @@
     <property name="title">
      <string>info</string>
     </property>
+    <addaction name="action_info"/>
    </widget>
    <addaction name="menu_file"/>
    <addaction name="menu_lang"/>
@@ -74,6 +75,11 @@
   <action name="action_lang_eng">
    <property name="text">
     <string>eng</string>
+   </property>
+  </action>
+  <action name="action_info">
+   <property name="text">
+    <string>info</string>
    </property>
   </action>
  </widget>

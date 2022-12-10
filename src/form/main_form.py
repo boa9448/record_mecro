@@ -31,6 +31,8 @@ class Ui_MainWindow(object):
         self.action_lang_kor.setObjectName(u"action_lang_kor")
         self.action_lang_eng = QAction(MainWindow)
         self.action_lang_eng.setObjectName(u"action_lang_eng")
+        self.action_info = QAction(MainWindow)
+        self.action_info.setObjectName(u"action_info")
         self.centralwidget = QWidget(MainWindow)
         self.centralwidget.setObjectName(u"centralwidget")
         self.gridLayout = QGridLayout(self.centralwidget)
@@ -64,6 +66,7 @@ class Ui_MainWindow(object):
         self.menu_file.addAction(self.action_exit)
         self.menu_lang.addAction(self.action_lang_kor)
         self.menu_lang.addAction(self.action_lang_eng)
+        self.menu_info.addAction(self.action_info)
 
         self.retranslateUi(MainWindow)
 
@@ -78,6 +81,7 @@ class Ui_MainWindow(object):
         self.action_exit.setText(QCoreApplication.translate("MainWindow", u"exit", None))
         self.action_lang_kor.setText(QCoreApplication.translate("MainWindow", u"kor", None))
         self.action_lang_eng.setText(QCoreApplication.translate("MainWindow", u"eng", None))
+        self.action_info.setText(QCoreApplication.translate("MainWindow", u"info", None))
         self.menu_file.setTitle(QCoreApplication.translate("MainWindow", u"file", None))
         self.menu_lang.setTitle(QCoreApplication.translate("MainWindow", u"lang", None))
         self.menu_info.setTitle(QCoreApplication.translate("MainWindow", u"info", None))
