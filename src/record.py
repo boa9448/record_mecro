@@ -30,6 +30,9 @@ class Recorder:
         self.key_listener.stop()
         self.mouse_listener.stop()
 
+    def join(self) -> None:
+        self.key_listener.join()
+
     def get_delay(self) -> float:
         if self.last_time is None:
             self.last_time = time.time()
@@ -41,21 +44,21 @@ class Recorder:
             return delay
 
     def on_press_release_handler(self, key : keyboard.Key | keyboard.KeyCode
-                                    , state : KeyState) -> None:
+                                    , state : KeyState) -> bool | None:
         key_name = getattr(key, "char", None) or getattr(key, "name", None)
         key_vk = getattr(key, "vk", None)
         if key_vk is None:
             key_vk = key.value.vk
 
         delay = self.get_delay()
-        self.user_on_press_release_handler((RecordType.KEYBOARD, key_name, key_vk, state, delay))
+        return self.user_on_press_release_handler((RecordType.KEYBOARD, key_name, key_vk, state, delay))
 
-    def on_click_handler(self, x : int, y : int, button : str, pressed : bool) -> None:
+    def on_click_handler(self, x : int, y : int, button : str, pressed : bool) -> bool | None:
         state = MouseState.PRESS if pressed else MouseState.RELEASE
         button_code = MouseButton.from_string(button.name)
         
         delay = self.get_delay()
-        self.user_on_click_handler((RecordType.MOUSE, x, y, button_code, state, delay))
+        return self.user_on_click_handler((RecordType.MOUSE, x, y, button_code, state, delay))
 
     @staticmethod
     def save_record(record_list : list[tuple], file_path : str) -> None:
