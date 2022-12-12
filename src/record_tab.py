@@ -195,17 +195,17 @@ class RecordTab(QWidget, Ui_record_form):
             self.add_item(item)
 
     def add_key_item(self, key_info : tuple[str, int, KeyState, float]) -> None:
-        char, vk, state, delay = key_info
+        char, vk, state, event_time = key_info
 
         state_text = state.to_string()
-        item_text = f"{RecordType.KEYBOARD.to_string()}\t {state_text}\t {char}\t ({vk})\t {delay}"
+        item_text = f"{RecordType.KEYBOARD.to_string()}\t {state_text}\t {char}\t ({vk})\t {event_time}"
 
         self.recorded_item_list.addItem(item_text)
 
     def add_mouse_item(self, mouse_info : tuple[int, int, MouseButton, MouseState, float]) -> None:
-        x, y, button, state, delay = mouse_info
+        x, y, button, state, event_time = mouse_info
         state_text = state.to_string()
         button_text = button.to_string()
-        item_text = f"{RecordType.MOUSE.to_string()}\t {state_text}\t {button_text}\t ({x}, {y})\t {delay}"
+        item_text = f"{RecordType.MOUSE.to_string()}\t {state_text}\t {button_text}\t ({x}, {y})\t {event_time}"
 
         self.recorded_item_list.addItem(item_text)

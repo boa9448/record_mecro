@@ -21,8 +21,6 @@ class Recorder:
                                             #, on_move = self.on_mouse_scroll_handler)
 
     def start(self) -> None:
-        self.last_time = None
-
         self.key_listener.start()
         self.mouse_listener.start()
 
@@ -33,16 +31,6 @@ class Recorder:
     def join(self) -> None:
         self.key_listener.join()
 
-    def get_delay(self) -> float:
-        if self.last_time is None:
-            self.last_time = time.time()
-            return 0
-        else:
-            cur_time = time.time()
-            delay = cur_time - self.last_time
-            self.last_time = cur_time
-            return delay
-
     def on_press_release_handler(self, key : keyboard.Key | keyboard.KeyCode
                                     , state : KeyState) -> bool | None:
         key_name = getattr(key, "char", None) or getattr(key, "name", None)
@@ -50,15 +38,15 @@ class Recorder:
         if key_vk is None:
             key_vk = key.value.vk
 
-        delay = self.get_delay()
-        return self.user_on_press_release_handler((RecordType.KEYBOARD, key_name, key_vk, state, delay))
+        event_time = time.time()
+        return self.user_on_press_release_handler((RecordType.KEYBOARD, key_name, key_vk, state, event_time))
 
     def on_click_handler(self, x : int, y : int, button : str, pressed : bool) -> bool | None:
         state = MouseState.PRESS if pressed else MouseState.RELEASE
         button_code = MouseButton.from_string(button.name)
         
-        delay = self.get_delay()
-        return self.user_on_click_handler((RecordType.MOUSE, x, y, button_code, state, delay))
+        event_time = time.time()
+        return self.user_on_click_handler((RecordType.MOUSE, x, y, button_code, state, event_time))
 
     @staticmethod
     def save_record(record : list[tuple], file_path : str) -> None:
@@ -75,21 +63,21 @@ class Recorder:
                 record_type, *args = item
 
                 if record_type == RecordType.KEYBOARD:
-                    key_name, key_vk, state, delay = args
+                    key_name, key_vk, state, event_time = args
                     converted_record.append((RecordType.KEYBOARD
                                                 , key_name
                                                 , key_vk
                                                 , KeyState(state)
-                                                , delay))
+                                                , event_time))
 
                 elif record_type == RecordType.MOUSE:
-                    x, y, button, state, delay = args
+                    x, y, button, state, event_time = args
                     converted_record.append((RecordType.MOUSE
                                                 , x
                                                 , y
                                                 , MouseButton(button)
                                                 , MouseState(state)
-                                                , delay))
+                                                , event_time))
 
             return converted_record
 
