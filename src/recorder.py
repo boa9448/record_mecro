@@ -61,22 +61,22 @@ class Recorder:
         return self.user_on_click_handler((RecordType.MOUSE, x, y, button_code, state, delay))
 
     @staticmethod
-    def save_record(record_list : list[tuple], file_path : str) -> None:
+    def save_record(record : list[tuple], file_path : str) -> None:
         with open(file_path, "w") as f:
-            json.dump(record_list, f, indent = 4)
+            json.dump(record, f, indent = 4)
 
     @staticmethod
     def load_record(file_path : str) -> list[tuple]:
         with open(file_path, "r") as f:
-            record_list = json.loads(f.read())
+            record = json.loads(f.read())
 
-            converted_record_list = []
-            for item in record_list:
+            converted_record = []
+            for item in record:
                 record_type, *args = item
 
                 if record_type == RecordType.KEYBOARD:
                     key_name, key_vk, state, delay = args
-                    converted_record_list.append((RecordType.KEYBOARD
+                    converted_record.append((RecordType.KEYBOARD
                                                 , key_name
                                                 , key_vk
                                                 , KeyState(state)
@@ -84,33 +84,48 @@ class Recorder:
 
                 elif record_type == RecordType.MOUSE:
                     x, y, button, state, delay = args
-                    converted_record_list.append((RecordType.MOUSE
+                    converted_record.append((RecordType.MOUSE
                                                 , x
                                                 , y
                                                 , MouseButton(button)
                                                 , MouseState(state)
                                                 , delay))
 
-            return converted_record_list
+            return converted_record
 
 
 class Runner:
-    def __init__(self, dd_obj : ClassDD
-                    , record_list : list[tuple]
-                    , random_delay_min_max : tuple[float, float] | None = None) -> None:
+    def __init__(self, dd_obj : ClassDD) -> None:
         self.dd = dd_obj
-        self.record_list = record_list
-        self.random_delay_min_max = random_delay_min_max
+        self.record_list = []
+        self.random_delay_min_max = None
 
-        if random_delay_min_max is None:
-            self.random_delay = lambda : 0
-        else:
-            min_delay, max_delay = random_delay_min_max
-            self.random_delay = lambda : random.uniform(min_delay, max_delay)
+        self.random_delay = lambda : 0
 
         self.record_thread = None
         self.exit_event = Event()
         self.end_callback = None
+
+    def add_record(self, record : list[tuple]) -> None:
+        self.record_list.extend(record)
+
+    def add_record_list(self, record_list : list[list[tuple]]) -> None:
+        for record in record_list:
+            self.add_record(record)
+
+    def clear_record(self) -> None:
+        self.record_list.clear()
+
+    def set_random_delay(self, min_delay : float, max_delay : float) -> None:
+        if min_delay == 0 and max_delay == 0:
+            self.random_delay = lambda : 0
+            return
+
+        if min_delay > max_delay:
+            min_delay, max_delay = max_delay, min_delay
+
+        self.random_delay_min_max = (min_delay, max_delay)
+        self.random_delay = lambda : random.uniform(min_delay, max_delay)
 
     def start(self) -> None:
         if self.record_thread is not None:
@@ -118,7 +133,7 @@ class Runner:
             self.record_thread.join()
 
         self.exit_event.clear()
-        self.record_thread = Thread(target = self.work)
+        self.record_thread = Thread(target = self.run)
         self.record_thread.start()
 
     def stop(self) -> None:
@@ -129,12 +144,23 @@ class Runner:
     def sleep(self, delay : float) -> None:
         self.exit_event.wait(delay)
 
-    def work(self) -> None:
-        for record in self.record_list:
+    def run(self) -> None:
+        record_list = self.record_list.copy()
+        for record in record_list:
             if self.exit_event.is_set():
                 break
 
-            record_type, *args = record
+            self.run_record(record)
+
+        if self.end_callback is not None:
+            self.end_callback()
+
+    def run_record(self, record : list[tuple]) -> None:
+        for item in record:
+            if self.exit_event.is_set():
+                break
+
+            record_type, *args = item
 
             if record_type == RecordType.KEYBOARD:
                 key_name, key_vk, state, delay = args
@@ -146,6 +172,3 @@ class Runner:
                 self.dd.move(x, y, False)
                 self.dd.btn(button, state)
                 self.sleep(delay + self.random_delay())
-
-        if self.end_callback is not None:
-            self.end_callback()

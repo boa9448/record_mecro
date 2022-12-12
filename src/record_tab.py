@@ -7,7 +7,7 @@ from PySide6.QtGui import QCloseEvent, QKeyEvent, QShowEvent, QHideEvent
 
 from form.record_form import Ui_record_form
 from class_dd import ClassDD
-from record import (Recorder
+from recorder import (Recorder
                     , Runner
                     , RecordType
                     , KeyState
@@ -55,7 +55,7 @@ class RecordTab(QWidget, Ui_record_form):
         self.press_release_signal.connect(self.press_release_signal_handler)
         self.click_signal.connect(self.click_signal_handler)
 
-        self.record_list = []
+        self.record = []
 
         self.dd_obj = ClassDD(None)
 
@@ -105,13 +105,13 @@ class RecordTab(QWidget, Ui_record_form):
     @Slot()
     def record_save_btn_clicked_handler(self) -> None:
         file_path = QFileDialog.getSaveFileName(self, self.tr("Save Record"), os.getcwd(), self.tr("Json Files (*.json)"))[0]
-        Recorder.save_record(self.record_list, file_path)
+        Recorder.save_record(self.record, file_path)
 
     @Slot()
     def record_load_btn_clicked_handler(self) -> None:
         file_path = QFileDialog.getOpenFileName(self, self.tr("Load Record"), os.getcwd(), self.tr("Json Files (*.json)"))[0]
-        self.record_list = Recorder.load_record(file_path)
-        self.add_items(self.record_list)
+        self.record = Recorder.load_record(file_path)
+        self.add_record(self.record)
 
     @Slot()
     def record_run_btn_clicked_handler(self) -> None:
@@ -137,19 +137,21 @@ class RecordTab(QWidget, Ui_record_form):
             selected_item = selected_items[0]
             row = self.recorded_item_list.row(selected_item)
             self.recorded_item_list.takeItem(row)
-            del self.record_list[row]
+            del self.record[row]
 
     def start_runner(self) -> None:
         self.record_run_btn.setText(self.tr("stop (\\)"))
         self.is_running = True
 
-        random_delay_min_max = None
+        random_delay_min = 0
+        random_delay_max = 0
         if self.use_random_delay_check.isChecked():
             random_delay_min = self.ramdom_delay_min_spin.value()
             random_delay_max = self.ramdom_delay_max_spin.value()
-            random_delay_min_max = (random_delay_min, random_delay_max)
 
-        self.runner = Runner(self.dd_obj, self.record_list, random_delay_min_max)
+        self.runner = Runner(self.dd_obj)
+        self.runner.add_record(self.record)
+        self.runner.set_random_delay(random_delay_min, random_delay_max)
         def end_callback():
             self.record_run_btn.setText(self.tr("run (\\)"))
             self.is_running = False
@@ -169,24 +171,24 @@ class RecordTab(QWidget, Ui_record_form):
         if vk in self.hotkey_list:
             return
 
-        self.record_list.append(key_info)
+        self.record.append(key_info)
         self.add_item(key_info)
 
     @Slot(tuple)
     def click_signal_handler(self, mouse_info : tuple[RecordType, int, int, MouseButton, MouseState, float]) -> None:
-        self.record_list.append(mouse_info)
+        self.record.append(mouse_info)
         self.add_item(mouse_info)
 
-    def add_item(self, record_info : tuple) -> None:
-        record_type, *args = record_info
+    def add_item(self, item : tuple) -> None:
+        record_type, *args = item
         if record_type == RecordType.KEYBOARD:
             self.add_key_item(args)
         elif record_type == RecordType.MOUSE:
             self.add_mouse_item(args)
 
-    def add_items(self, record_list : list[tuple]) -> None:
-        for record_info in record_list:
-            self.add_item(record_info)
+    def add_record(self, record : list[tuple]) -> None:
+        for item in record:
+            self.add_item(item)
 
     def add_key_item(self, key_info : tuple[str, int, KeyState, float]) -> None:
         char, vk, state, delay = key_info
