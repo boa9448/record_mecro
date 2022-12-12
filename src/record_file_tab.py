@@ -1,4 +1,5 @@
 import os
+from typing import Callable
 from glob import glob
 from ctypes import wintypes
 
@@ -7,7 +8,8 @@ from PySide6.QtWidgets import QWidget, QFileDialog
 from PySide6.QtGui import QShowEvent, QHideEvent, QCloseEvent
 
 from form.record_file_form import Ui_record_file_form
-from record import Recorder, Runner
+from recorder import Recorder, Runner
+from class_dd import ClassDD
 import hotkey
 
 class RecordFileTab(QWidget, Ui_record_file_form):
@@ -27,7 +29,10 @@ class RecordFileTab(QWidget, Ui_record_file_form):
                                     , self.tr("all loop")]
         self.run_type_combo.addItems(self.run_type_combo_data)
 
-        self.runner_list = []
+        self.record_list = []
+
+        self.PLAY_RUN_BUTTON_TR_TEXT = self.tr("run (\\)")
+        self.PLAY_STOP_BUTTON_TR_TEXT = self.tr("stop (\\)")
 
     def showEvent(self, event: QShowEvent) -> None:
         hotkey.register_hotkey(self.winId(), self.RECORD_FILE_RUN_HOTKEY_ID, self.RECORD_FILE_RUN_HOTKEY)
@@ -57,22 +62,45 @@ class RecordFileTab(QWidget, Ui_record_file_form):
             self.record_file_list.clear()
 
             json_file_list = glob(os.path.join(dir_path, "*.json"))
-            self.add_items(json_file_list)
+            self.add_record_list(json_file_list)
 
-    def add_item(self, file_path : str) -> None:
-        runner = self.load_runner(file_path)
-        self.runner_list.append(runner)
+    def add_record(self, file_path : str) -> None:
+        record = Recorder.load_record(file_path)
+        self.record_list.append(record)
         self.record_file_list.addItem(file_path)
 
-    def add_items(self, file_path_list : list[str]) -> None:
-        self.runner_list.extend([self.load_runner(file_path) for file_path in file_path_list])
-        self.record_file_list.addItems(file_path_list)
-
-    def load_runner(self, file_path : str) -> Runner:
-        record_item_list = Recorder.load_record(file_path)
-        runner = Runner(record_item_list)
-        return runner
+    def add_record_list(self, file_path_list : list[str]) -> None:
+        for file_path in file_path_list:
+            self.add_record(file_path)
 
     @Slot()
     def record_file_run_btn_clicked_handler(self) -> None:
-        print("record_file_run_btn_clicked_handler")
+        is_running = getattr(self, "is_running", False)
+        if is_running:
+            self.exit_runner()
+        else:
+            def end_callback() -> None:
+                self.record_file_run_btn.setText(self.PLAY_RUN_BUTTON_TR_TEXT)
+                self.is_running = False
+            self.start_runner(end_callback)
+
+        self.is_running = not is_running
+
+    def start_runner(self, end_callback : Callable | None = None) -> None:
+        self.record_file_run_btn.setText(self.PLAY_STOP_BUTTON_TR_TEXT)
+
+        random_delay_min = 0
+        random_delay_max = 0
+        if self.use_random_delay_check.isChecked():
+            random_delay_min = self.ramdom_delay_min_spin.value()
+            random_delay_max = self.ramdom_delay_max_spin.value()
+
+        self.runner = Runner(ClassDD(None))
+        self.runner.add_record_list(self.record_list)
+        self.runner.set_random_delay(random_delay_min, random_delay_max)
+        self.runner.set_end_callback(end_callback)
+        self.runner.start()
+
+    def exit_runner(self) -> None:
+        self.record_file_run_btn.setText(self.PLAY_RUN_BUTTON_TR_TEXT)
+        self.runner.exit()
