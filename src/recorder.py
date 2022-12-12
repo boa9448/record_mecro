@@ -107,7 +107,7 @@ class Runner:
         self.end_callback = None
 
     def add_record(self, record : list[tuple]) -> None:
-        self.record_list.extend(record)
+        self.record_list.append(record)
 
     def add_record_list(self, record_list : list[list[tuple]]) -> None:
         for record in record_list:
@@ -136,10 +136,13 @@ class Runner:
         self.record_thread = Thread(target = self.run)
         self.record_thread.start()
 
-    def stop(self) -> None:
+    def exit(self) -> None:
         if self.record_thread is not None:
             self.exit_event.set()
             self.record_thread.join()
+
+    def is_exit(self) -> bool:
+        return self.exit_event.is_set()
 
     def sleep(self, delay : float) -> None:
         self.exit_event.wait(delay)
@@ -147,7 +150,7 @@ class Runner:
     def run(self) -> None:
         record_list = self.record_list.copy()
         for record in record_list:
-            if self.exit_event.is_set():
+            if self.is_exit():
                 break
 
             self.run_record(record)
@@ -157,7 +160,7 @@ class Runner:
 
     def run_record(self, record : list[tuple]) -> None:
         for item in record:
-            if self.exit_event.is_set():
+            if self.is_exit():
                 break
 
             record_type, *args = item

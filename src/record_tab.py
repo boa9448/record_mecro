@@ -105,11 +105,15 @@ class RecordTab(QWidget, Ui_record_form):
     @Slot()
     def record_save_btn_clicked_handler(self) -> None:
         file_path = QFileDialog.getSaveFileName(self, self.tr("Save Record"), os.getcwd(), self.tr("Json Files (*.json)"))[0]
+        if not file_path:
+            return
         Recorder.save_record(self.record, file_path)
 
     @Slot()
     def record_load_btn_clicked_handler(self) -> None:
         file_path = QFileDialog.getOpenFileName(self, self.tr("Load Record"), os.getcwd(), self.tr("Json Files (*.json)"))[0]
+        if not file_path:
+            return
         self.record = Recorder.load_record(file_path)
         self.add_record(self.record)
 
@@ -163,7 +167,7 @@ class RecordTab(QWidget, Ui_record_form):
         self.record_run_btn.setText(self.tr("run (\\)"))
         self.is_running = False
 
-        self.runner.stop()
+        self.runner.exit()
 
     @Slot(tuple)
     def press_release_signal_handler(self, key_info : tuple[RecordType, str, int, KeyState, float]) -> None:
