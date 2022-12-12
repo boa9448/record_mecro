@@ -31,7 +31,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         cur_dir = root_dir()
         dd_path = os.path.join(cur_dir, "3rdparty", "DD64.dll")
-        print(dd_path)
         dd_obj = ClassDD(dd_path)
 
         self.tabWidget.addTab(RecordTab(), self.tr("record"))
