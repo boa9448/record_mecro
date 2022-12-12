@@ -12,6 +12,15 @@ from record_file_tab import RecordFileTab
 from class_dd import ClassDD
 
 
+def root_dir() -> str:
+    try:
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.dirname(os.path.abspath(__file__))
+
+    return base_path
+        
+
 class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self) -> None:
         super(MainWindow, self).__init__()
@@ -20,8 +29,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.action_lang_eng.triggered.connect(lambda : self.change_lang("eng"))
         self.action_lang_kor.triggered.connect(lambda : self.change_lang("kor"))
 
-        cur_dir = os.path.dirname(os.path.abspath(__file__))
+        cur_dir = root_dir()
         dd_path = os.path.join(cur_dir, "3rdparty", "DD64.dll")
+        print(dd_path)
         dd_obj = ClassDD(dd_path)
 
         self.tabWidget.addTab(RecordTab(), self.tr("record"))
@@ -43,7 +53,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             app.removeTranslator(self.trasnlator)
 
         trasnlator = QTranslator()
-        trasnlator.load(f"lang_{lang}.qm")
+        lang_path = os.path.join(root_dir(), "translations", f"lang_{lang}.qm")
+        trasnlator.load(lang_path)
         app.installTranslator(trasnlator)
         self.trasnlator = trasnlator
 

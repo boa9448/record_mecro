@@ -23,11 +23,7 @@ class RecordFileTab(QWidget, Ui_record_file_form):
         self.record_open_folder_btn.clicked.connect(self.record_open_folde_btn_clicked_handler)
         self.record_file_run_btn.clicked.connect(self.record_file_run_btn_clicked_handler)
 
-        self.run_type_combo_data = [self.tr("First selected only")
-                                    , self.tr("selected all")
-                                    , self.tr("all")
-                                    , self.tr("all loop")]
-        self.run_type_combo.addItems(self.run_type_combo_data)
+        self.init_combo()
 
         self.record_list = []
 
@@ -54,6 +50,18 @@ class RecordFileTab(QWidget, Ui_record_file_form):
                     self.record_file_run_btn_clicked_handler()
 
         return super().nativeEvent(eventType, message)
+
+    def retranslateUi(self, record_file_form):
+        self.init_combo()
+        return super().retranslateUi(record_file_form)
+
+    def init_combo(self) -> None:
+        self.run_type_combo.clear()
+        self.run_type_combo_data = [self.tr("First selected only")
+                                    , self.tr("selected all")
+                                    , self.tr("all")
+                                    , self.tr("all loop")]
+        self.run_type_combo.addItems(self.run_type_combo_data)
 
     @Slot()
     def record_open_folde_btn_clicked_handler(self) -> None:
