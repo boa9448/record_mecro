@@ -54,9 +54,9 @@ class RecordFileTab(QWidget, Ui_record_file_form):
 
     def init_combo(self) -> None:
         self.run_type_combo.clear()
-        self.run_type_combo_data = [self.tr("First selected only")
-                                    , self.tr("selected all")
-                                    , self.tr("all")]
+        self.run_type_combo_data = [self.tr("all")
+                                    , self.tr("First selected only")
+                                    , self.tr("selected all")]
                                     #, self.tr("all loop")]
         self.run_type_combo.addItems(self.run_type_combo_data)
 
@@ -124,20 +124,21 @@ class RecordFileTab(QWidget, Ui_record_file_form):
             run_type = self.run_type_combo.currentIndex()
 
             record_list = []
+    
             if run_type == 0:
+                record_list = self.record_list
+
+            elif run_type == 1:
                 selected_list = self.record_file_list.selectedItems()
                 first_item = selected_list[0]
                 item_index = self.record_file_list.row(first_item)
                 record_list = [self.record_list[item_index]]
 
-            elif run_type == 1:
+            elif run_type == 2:
                 selected_list = self.record_file_list.selectedItems()
                 for item in selected_list:
                     item_index = self.record_file_list.row(item)
                     record_list.append(self.record_list[item_index])
-
-            elif run_type == 2:
-                record_list = self.record_list
 
             elif run_type == 3:
                 record_list = self.record_list
