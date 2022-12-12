@@ -2,6 +2,19 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="ko_KR">
 <context>
+    <name></name>
+    <message>
+        <location filename="src/main.py" line="52"/>
+        <source>record</source>
+        <translation>녹화</translation>
+    </message>
+    <message>
+        <location filename="src/main.py" line="53"/>
+        <source>record_file</source>
+        <translation>녹화된 파일</translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <location filename="src/ui/main_form.ui" line="14"/>
@@ -9,12 +22,14 @@
         <translation>메인 윈도우임</translation>
     </message>
     <message>
+        <location filename="src/main.py" line="27"/>
         <source>record</source>
-        <translation type="vanished">녹화</translation>
+        <translation>녹화</translation>
     </message>
     <message>
+        <location filename="src/main.py" line="29"/>
         <source>record_file</source>
-        <translation type="vanished">녹화된 파일</translation>
+        <translation>녹화된 파일</translation>
     </message>
     <message>
         <source>load</source>
@@ -80,21 +95,22 @@
     </message>
     <message>
         <location filename="src/ui/main_form.ui" line="56"/>
+        <location filename="src/ui/main_form.ui" line="82"/>
         <source>info</source>
         <translation>정보</translation>
     </message>
     <message>
-        <location filename="src/ui/main_form.ui" line="66"/>
+        <location filename="src/ui/main_form.ui" line="67"/>
         <source>exit</source>
         <translation>종료</translation>
     </message>
     <message>
-        <location filename="src/ui/main_form.ui" line="71"/>
+        <location filename="src/ui/main_form.ui" line="72"/>
         <source>kor</source>
         <translation>한글</translation>
     </message>
     <message>
-        <location filename="src/ui/main_form.ui" line="76"/>
+        <location filename="src/ui/main_form.ui" line="77"/>
         <source>eng</source>
         <translation>영어</translation>
     </message>
@@ -125,6 +141,11 @@
         <location filename="src/ui/record_file_form.ui" line="58"/>
         <source>run (\)</source>
         <translation>실행 (\)</translation>
+    </message>
+    <message>
+        <location filename="src/ui/record_file_form.ui" line="92"/>
+        <source>open folder</source>
+        <translation>폴더 열기</translation>
     </message>
     <message>
         <source>start</source>

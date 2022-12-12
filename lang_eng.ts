@@ -2,6 +2,19 @@
 <!DOCTYPE TS>
 <TS version="2.1" language="en_US">
 <context>
+    <name></name>
+    <message>
+        <location filename="src/main.py" line="52"/>
+        <source>record</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="src/main.py" line="53"/>
+        <source>record_file</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
     <name>MainWindow</name>
     <message>
         <location filename="src/ui/main_form.ui" line="14"/>
@@ -20,22 +33,33 @@
     </message>
     <message>
         <location filename="src/ui/main_form.ui" line="56"/>
+        <location filename="src/ui/main_form.ui" line="82"/>
         <source>info</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/ui/main_form.ui" line="66"/>
+        <location filename="src/ui/main_form.ui" line="67"/>
         <source>exit</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/ui/main_form.ui" line="71"/>
+        <location filename="src/ui/main_form.ui" line="72"/>
         <source>kor</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="src/ui/main_form.ui" line="76"/>
+        <location filename="src/ui/main_form.ui" line="77"/>
         <source>eng</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="src/main.py" line="27"/>
+        <source>record</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="src/main.py" line="29"/>
+        <source>record_file</source>
         <translation></translation>
     </message>
 </context>
@@ -74,6 +98,11 @@
     <message>
         <location filename="src/ui/record_file_form.ui" line="77"/>
         <source>random delay max : </source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="src/ui/record_file_form.ui" line="92"/>
+        <source>open folder</source>
         <translation></translation>
     </message>
 </context>
