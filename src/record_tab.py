@@ -1,4 +1,5 @@
 import os
+from typing import Callable
 from ctypes import wintypes
 
 from PySide6.QtCore import Qt, Slot, Signal, QByteArray, QObject, QEvent
@@ -57,9 +58,12 @@ class RecordTab(QWidget, Ui_record_form):
 
         self.record = []
 
-        self.dd_obj = ClassDD(None)
-
         self.hotkey_list = [self.RECORD_START_HOTKEY, self.RECORD_RUN_HOTKEY]
+
+        self.RECORD_START_BUTTON_TR_TEXT = self.tr("start (=)")
+        self.RECORD_STOP_BUTTON_TR_TEXT = self.tr("stop (=)")
+        self.PLAY_RUN_BUTTON_TR_TEXT = self.tr("run (\\)")
+        self.PLAY_STOP_BUTTON_TR_TEXT = self.tr("stop (\\)")
 
     def showEvent(self, event: QShowEvent) -> None:
         hotkey.register_hotkey(self.winId(), self.RECORD_START_HOTKEY_ID, self.RECORD_START_HOTKEY)
@@ -89,13 +93,13 @@ class RecordTab(QWidget, Ui_record_form):
     def record_start_btn_clicked_handler(self) -> None:
         is_recording = getattr(self, "is_recording", False)
         if is_recording:
-            self.record_start_btn.setText(self.tr("start (=)"))
+            self.record_start_btn.setText(self.RECORD_START_BUTTON_TR_TEXT)
             self.is_recording = False
 
             self.recorder.stop()
 
         else:
-            self.record_start_btn.setText(self.tr("stop (=)"))
+            self.record_start_btn.setText(self.RECORD_STOP_BUTTON_TR_TEXT)
             self.is_recording = True
 
             self.recorder = Recorder(lambda data : self.press_release_signal.emit(data)
@@ -122,10 +126,35 @@ class RecordTab(QWidget, Ui_record_form):
         print("record_run_btn_clicked_handler")
         is_running = getattr(self, "is_running", False)
         if is_running:
-            self.end_runner()
+            self.exit_runner()
         
         else:
-            self.start_runner()
+            def end_callback():
+                self.record_run_btn.setText(self.PLAY_RUN_BUTTON_TR_TEXT)
+                self.is_running = False
+
+            self.start_runner(end_callback)
+
+        self.is_running = not is_running
+
+    def start_runner(self, end_callback : Callable | None = None) -> None:
+        self.record_run_btn.setText(self.PLAY_STOP_BUTTON_TR_TEXT)
+
+        random_delay_min = 0
+        random_delay_max = 0
+        if self.use_random_delay_check.isChecked():
+            random_delay_min = self.ramdom_delay_min_spin.value()
+            random_delay_max = self.ramdom_delay_max_spin.value()
+
+        self.runner = Runner(ClassDD(None))
+        self.runner.add_record(self.record)
+        self.runner.set_random_delay(random_delay_min, random_delay_max)
+        self.runner.set_end_callback(end_callback)
+        self.runner.start()
+
+    def exit_runner(self) -> None:
+        self.record_run_btn.setText(self.PLAY_RUN_BUTTON_TR_TEXT)
+        self.runner.exit()
 
     @Slot(QKeyEvent)
     def recorded_item_list_key_press_handler(self, event : QKeyEvent) -> None:
@@ -142,32 +171,6 @@ class RecordTab(QWidget, Ui_record_form):
             row = self.recorded_item_list.row(selected_item)
             self.recorded_item_list.takeItem(row)
             del self.record[row]
-
-    def start_runner(self) -> None:
-        self.record_run_btn.setText(self.tr("stop (\\)"))
-        self.is_running = True
-
-        random_delay_min = 0
-        random_delay_max = 0
-        if self.use_random_delay_check.isChecked():
-            random_delay_min = self.ramdom_delay_min_spin.value()
-            random_delay_max = self.ramdom_delay_max_spin.value()
-
-        self.runner = Runner(self.dd_obj)
-        self.runner.add_record(self.record)
-        self.runner.set_random_delay(random_delay_min, random_delay_max)
-        def end_callback():
-            self.record_run_btn.setText(self.tr("run (\\)"))
-            self.is_running = False
-
-        self.runner.end_callback = end_callback
-        self.runner.start()
-
-    def end_runner(self) -> None:
-        self.record_run_btn.setText(self.tr("run (\\)"))
-        self.is_running = False
-
-        self.runner.exit()
 
     @Slot(tuple)
     def press_release_signal_handler(self, key_info : tuple[RecordType, str, int, KeyState, float]) -> None:

@@ -115,6 +115,9 @@ class Runner:
         self.random_delay_min_max = (min_delay, max_delay)
         self.random_delay = lambda : random.uniform(min_delay, max_delay)
 
+    def set_end_callback(self, callback : Callable) -> None:
+        self.end_callback = callback
+
     def start(self) -> None:
         if self.record_thread is not None:
             self.exit_event.set()
