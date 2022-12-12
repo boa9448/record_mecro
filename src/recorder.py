@@ -147,6 +147,7 @@ class Runner:
             self.end_callback()
 
     def run_record(self, record : list[tuple]) -> None:
+        record = self.event_time_to_delay(record)
         for item in record:
             if self.is_exit():
                 break
@@ -163,3 +164,20 @@ class Runner:
                 self.dd.move(x, y, False)
                 self.dd.btn(button, state)
                 self.sleep(delay + self.random_delay())
+
+    def event_time_to_delay(self, record : list[tuple]) -> list[tuple]:
+        new_record = []
+        count = len(record)
+
+        for idx in range(count):
+            *cur_args, cur_event_time = record[idx]
+            if idx == count - 1:
+                new_record.append((*cur_args, 0))
+                break
+
+            *next_args, next_event_time = record[idx + 1]
+
+            delay = next_event_time - cur_event_time
+            new_record.append((*cur_args, delay))
+
+        return new_record
