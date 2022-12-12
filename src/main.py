@@ -26,6 +26,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__()
         self.setupUi(self)
 
+        self.action_exit.triggered.connect(self.close)
         self.action_lang_eng.triggered.connect(lambda : self.change_lang("eng"))
         self.action_lang_kor.triggered.connect(lambda : self.change_lang("kor"))
 
