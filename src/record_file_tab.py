@@ -27,9 +27,6 @@ class RecordFileTab(QWidget, Ui_record_file_form):
 
         self.record_list = []
 
-        self.PLAY_RUN_BUTTON_TR_TEXT = self.tr("run (\\)")
-        self.PLAY_STOP_BUTTON_TR_TEXT = self.tr("stop (\\)")
-
     def showEvent(self, event: QShowEvent) -> None:
         hotkey.register_hotkey(self.winId(), self.RECORD_FILE_RUN_HOTKEY_ID, self.RECORD_FILE_RUN_HOTKEY)
         return super().showEvent(event)
@@ -59,8 +56,8 @@ class RecordFileTab(QWidget, Ui_record_file_form):
         self.run_type_combo.clear()
         self.run_type_combo_data = [self.tr("First selected only")
                                     , self.tr("selected all")
-                                    , self.tr("all")
-                                    , self.tr("all loop")]
+                                    , self.tr("all")]
+                                    #, self.tr("all loop")]
         self.run_type_combo.addItems(self.run_type_combo_data)
 
     @Slot()
@@ -88,14 +85,23 @@ class RecordFileTab(QWidget, Ui_record_file_form):
             self.exit_runner()
         else:
             def end_callback() -> None:
-                self.record_file_run_btn.setText(self.PLAY_RUN_BUTTON_TR_TEXT)
+                self.record_file_run_btn.setText(self.tr("run (\\)"))
                 self.is_running = False
-            self.start_runner(end_callback)
+
+            try:
+                self.start_runner(end_callback)
+            except RuntimeError as e:
+                print(e)
+                return
 
         self.is_running = not is_running
 
     def start_runner(self, end_callback : Callable | None = None) -> None:
-        self.record_file_run_btn.setText(self.PLAY_STOP_BUTTON_TR_TEXT)
+        record_list = self.get_recrod_list()
+        if not record_list:
+            raise RuntimeError("record_list is empty")
+
+        self.record_file_run_btn.setText(self.tr("stop (\\)"))
 
         random_delay_min = 0
         random_delay_max = 0
@@ -104,11 +110,39 @@ class RecordFileTab(QWidget, Ui_record_file_form):
             random_delay_max = self.ramdom_delay_max_spin.value()
 
         self.runner = Runner(ClassDD(None))
-        self.runner.add_record_list(self.record_list)
+        self.runner.add_record_list(record_list)
         self.runner.set_random_delay(random_delay_min, random_delay_max)
         self.runner.set_end_callback(end_callback)
         self.runner.start()
 
     def exit_runner(self) -> None:
-        self.record_file_run_btn.setText(self.PLAY_RUN_BUTTON_TR_TEXT)
+        self.record_file_run_btn.setText(self.tr("run (\\)"))
         self.runner.exit()
+
+    def get_recrod_list(self) -> list[list[tuple]]:
+        try:
+            run_type = self.run_type_combo.currentIndex()
+
+            record_list = []
+            if run_type == 0:
+                selected_list = self.record_file_list.selectedItems()
+                first_item = selected_list[0]
+                item_index = self.record_file_list.row(first_item)
+                record_list = [self.record_list[item_index]]
+
+            elif run_type == 1:
+                selected_list = self.record_file_list.selectedItems()
+                for item in selected_list:
+                    item_index = self.record_file_list.row(item)
+                    record_list.append(self.record_list[item_index])
+
+            elif run_type == 2:
+                record_list = self.record_list
+
+            elif run_type == 3:
+                record_list = self.record_list
+        except Exception as e:
+            print(e)
+            return []
+
+        return record_list

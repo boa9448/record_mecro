@@ -60,11 +60,6 @@ class RecordTab(QWidget, Ui_record_form):
 
         self.hotkey_list = [self.RECORD_START_HOTKEY, self.RECORD_RUN_HOTKEY]
 
-        self.RECORD_START_BUTTON_TR_TEXT = self.tr("start (=)")
-        self.RECORD_STOP_BUTTON_TR_TEXT = self.tr("stop (=)")
-        self.PLAY_RUN_BUTTON_TR_TEXT = self.tr("run (\\)")
-        self.PLAY_STOP_BUTTON_TR_TEXT = self.tr("stop (\\)")
-
     def showEvent(self, event: QShowEvent) -> None:
         hotkey.register_hotkey(self.winId(), self.RECORD_START_HOTKEY_ID, self.RECORD_START_HOTKEY)
         hotkey.register_hotkey(self.winId(), self.RECORD_RUN_HOTKEY_ID, self.RECORD_RUN_HOTKEY)
@@ -93,13 +88,13 @@ class RecordTab(QWidget, Ui_record_form):
     def record_start_btn_clicked_handler(self) -> None:
         is_recording = getattr(self, "is_recording", False)
         if is_recording:
-            self.record_start_btn.setText(self.RECORD_START_BUTTON_TR_TEXT)
+            self.record_start_btn.setText(self.tr("start (=)"))
             self.is_recording = False
 
             self.recorder.stop()
 
         else:
-            self.record_start_btn.setText(self.RECORD_STOP_BUTTON_TR_TEXT)
+            self.record_start_btn.setText(self.tr("stop (=)"))
             self.is_recording = True
 
             self.recorder = Recorder(lambda data : self.press_release_signal.emit(data)
@@ -130,7 +125,7 @@ class RecordTab(QWidget, Ui_record_form):
         
         else:
             def end_callback():
-                self.record_run_btn.setText(self.PLAY_RUN_BUTTON_TR_TEXT)
+                self.record_run_btn.setText(self.tr("run (\\)"))
                 self.is_running = False
 
             self.start_runner(end_callback)
@@ -138,7 +133,7 @@ class RecordTab(QWidget, Ui_record_form):
         self.is_running = not is_running
 
     def start_runner(self, end_callback : Callable | None = None) -> None:
-        self.record_run_btn.setText(self.PLAY_STOP_BUTTON_TR_TEXT)
+        self.record_run_btn.setText(self.tr("stop (\\)"))
 
         random_delay_min = 0
         random_delay_max = 0
@@ -153,7 +148,7 @@ class RecordTab(QWidget, Ui_record_form):
         self.runner.start()
 
     def exit_runner(self) -> None:
-        self.record_run_btn.setText(self.PLAY_RUN_BUTTON_TR_TEXT)
+        self.record_run_btn.setText(self.tr("run (\\)"))
         self.runner.exit()
 
     @Slot(QKeyEvent)
