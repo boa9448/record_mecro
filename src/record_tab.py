@@ -1,5 +1,4 @@
 import os
-from typing import Union
 from ctypes import wintypes
 
 from PySide6.QtCore import Qt, Slot, Signal, QByteArray, QObject, QEvent
@@ -36,6 +35,12 @@ class RecordTab(QWidget, Ui_record_form):
     press_release_signal = Signal(tuple)
     click_signal = Signal(tuple)
 
+    RECORD_START_HOTKEY_ID = 0
+    RECORD_RUN_HOTKEY_ID = 1
+
+    RECORD_START_HOTKEY = hotkey.VK_OEM_PLUS
+    RECORD_RUN_HOTKEY = hotkey.VK_OEM_5
+
     def __init__(self) -> None:
         super(RecordTab, self).__init__()
         self.setupUi(self)
@@ -54,28 +59,28 @@ class RecordTab(QWidget, Ui_record_form):
 
         self.dd_obj = ClassDD(None)
 
-        self.hotkey_list = [hotkey.VK_OEM_PLUS, hotkey.VK_OEM_5]
+        self.hotkey_list = [self.RECORD_START_HOTKEY, self.RECORD_RUN_HOTKEY]
 
     def showEvent(self, event: QShowEvent) -> None:
-        hotkey.register_hotkey(self.winId(), 0, self.hotkey_list[0])
-        hotkey.register_hotkey(self.winId(), 1, self.hotkey_list[1])
+        hotkey.register_hotkey(self.winId(), self.RECORD_START_HOTKEY_ID, self.RECORD_START_HOTKEY)
+        hotkey.register_hotkey(self.winId(), self.RECORD_RUN_HOTKEY_ID, self.RECORD_RUN_HOTKEY)
         return super().showEvent(event)
 
     def hideEvent(self, event : QHideEvent) -> None:
-        hotkey.unregister_hotkey(self.winId(), 0)
-        hotkey.unregister_hotkey(self.winId(), 1)
+        hotkey.unregister_hotkey(self.winId(), self.RECORD_START_HOTKEY_ID)
+        hotkey.unregister_hotkey(self.winId(), self.RECORD_RUN_HOTKEY_ID)
 
     def closeEvent(self, event: QCloseEvent) -> None:
-        hotkey.unregister_hotkey(self.winId(), 0)
-        hotkey.unregister_hotkey(self.winId(), 1)
+        hotkey.unregister_hotkey(self.winId(), self.RECORD_START_HOTKEY_ID)
+        hotkey.unregister_hotkey(self.winId(), self.RECORD_RUN_HOTKEY_ID)
 
-    def nativeEvent(self, eventType: Union[QByteArray, bytes], message: int) -> object:
+    def nativeEvent(self, eventType: QByteArray, message: int) -> object:
         if eventType == b"windows_generic_MSG":
             msg = wintypes.MSG.from_address(message.__int__())
             if msg.message == hotkey.WM_HOTKEY:
-                if msg.wParam == 0:
+                if msg.wParam == self.RECORD_START_HOTKEY_ID:
                     self.record_start_btn_clicked_handler()
-                elif msg.wParam == 1:
+                elif msg.wParam == self.RECORD_RUN_HOTKEY_ID:
                     self.record_run_btn_clicked_handler()
 
         return super().nativeEvent(eventType, message)
@@ -110,6 +115,7 @@ class RecordTab(QWidget, Ui_record_form):
 
     @Slot()
     def record_run_btn_clicked_handler(self) -> None:
+        print("record_run_btn_clicked_handler")
         is_running = getattr(self, "is_running", False)
         if is_running:
             self.end_runner()
