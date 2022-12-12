@@ -132,6 +132,10 @@ class Runner:
             self.exit_event.set()
             self.record_thread.join()
 
+    def join(self) -> None:
+        if self.record_thread is not None:
+            self.record_thread.join()
+
     def is_exit(self) -> bool:
         return self.exit_event.is_set()
 
