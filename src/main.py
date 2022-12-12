@@ -17,8 +17,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__()
         self.setupUi(self)
 
-        self.change_lang("kor")
-
         self.action_lang_eng.triggered.connect(lambda : self.change_lang("eng"))
         self.action_lang_kor.triggered.connect(lambda : self.change_lang("kor"))
 
@@ -28,6 +26,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.tabWidget.addTab(RecordTab(), self.tr("record"))
         self.tabWidget.addTab(RecordFileTab(), self.tr("record_file"))
+
+        self.change_lang("kor")
 
     def closeEvent(self, event : QCloseEvent) -> None:
         tab_count = self.tabWidget.count()
@@ -46,6 +46,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         trasnlator.load(f"lang_{lang}.qm")
         app.installTranslator(trasnlator)
         self.trasnlator = trasnlator
+
+        teb_count = self.tabWidget.count()
+        tab_name_list = [self.tr("record"), self.tr("record_file")]
+        for idx in range(teb_count):
+            self.tabWidget.setTabText(idx, tab_name_list[idx])
+            tab = self.tabWidget.widget(idx)
+            tab.retranslateUi(tab)
 
         self.retranslateUi(self)
 
