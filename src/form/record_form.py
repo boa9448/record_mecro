@@ -84,6 +84,7 @@ class Ui_record_form(object):
 
         self.ramdom_delay_min_spin = QDoubleSpinBox(self.groupBox_3)
         self.ramdom_delay_min_spin.setObjectName(u"ramdom_delay_min_spin")
+        self.ramdom_delay_min_spin.setSingleStep(0.100000000000000)
 
         self.formLayout.setWidget(0, QFormLayout.FieldRole, self.ramdom_delay_min_spin)
 
@@ -94,6 +95,7 @@ class Ui_record_form(object):
 
         self.ramdom_delay_max_spin = QDoubleSpinBox(self.groupBox_3)
         self.ramdom_delay_max_spin.setObjectName(u"ramdom_delay_max_spin")
+        self.ramdom_delay_max_spin.setSingleStep(0.100000000000000)
 
         self.formLayout.setWidget(1, QFormLayout.FieldRole, self.ramdom_delay_max_spin)
 

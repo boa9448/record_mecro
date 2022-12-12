@@ -15,10 +15,10 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QCheckBox, QComboBox, QDoubleSpinBox,
-    QFormLayout, QGridLayout, QGroupBox, QLabel,
-    QListWidget, QListWidgetItem, QPushButton, QSizePolicy,
-    QSpacerItem, QWidget)
+from PySide6.QtWidgets import (QAbstractItemView, QApplication, QCheckBox, QComboBox,
+    QDoubleSpinBox, QFormLayout, QGridLayout, QGroupBox,
+    QLabel, QListWidget, QListWidgetItem, QPushButton,
+    QSizePolicy, QSpacerItem, QWidget)
 
 class Ui_record_file_form(object):
     def setupUi(self, record_file_form):
@@ -33,6 +33,7 @@ class Ui_record_file_form(object):
         self.gridLayout_7.setObjectName(u"gridLayout_7")
         self.record_file_list = QListWidget(self.groupBox_4)
         self.record_file_list.setObjectName(u"record_file_list")
+        self.record_file_list.setSelectionMode(QAbstractItemView.ExtendedSelection)
 
         self.gridLayout_7.addWidget(self.record_file_list, 0, 0, 1, 1)
 
@@ -66,6 +67,7 @@ class Ui_record_file_form(object):
 
         self.ramdom_delay_min_spin = QDoubleSpinBox(self.groupBox_5)
         self.ramdom_delay_min_spin.setObjectName(u"ramdom_delay_min_spin")
+        self.ramdom_delay_min_spin.setSingleStep(0.100000000000000)
 
         self.formLayout_2.setWidget(0, QFormLayout.FieldRole, self.ramdom_delay_min_spin)
 
@@ -76,6 +78,7 @@ class Ui_record_file_form(object):
 
         self.ramdom_delay_max_spin = QDoubleSpinBox(self.groupBox_5)
         self.ramdom_delay_max_spin.setObjectName(u"ramdom_delay_max_spin")
+        self.ramdom_delay_max_spin.setSingleStep(0.100000000000000)
 
         self.formLayout_2.setWidget(1, QFormLayout.FieldRole, self.ramdom_delay_max_spin)
 
